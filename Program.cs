@@ -1,7 +1,12 @@
+using SignalRChat.Hubs;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorPages();
+
+// Adds SignalR to the ASP.NET Core dependency injection and routing systems.
+builder.Services.AddSignalR();
 
 var app = builder.Build();
 
@@ -21,5 +26,6 @@ app.UseRouting();
 app.UseAuthorization();
 
 app.MapRazorPages();
+app.MapHub<ChatHub>("/chatHub"); // The SignalR server must be configured to pass SignalR requests to SignalR
 
 app.Run();
