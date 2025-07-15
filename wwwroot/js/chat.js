@@ -48,6 +48,14 @@ connection.start().then(function () {
     return console.error("Connection error:", err)
 });
 
+// Stops the SignalR connection when the window is closed or refreshed and sends a final disconnected message
+window.addEventListener("beforeunload", function (event) {
+    SendGlobalMessage(`User disconnected`).finally(() => {
+        connection.stop();
+    });
+});
+
+
 // Bind a click event listener to connectButton to send message on click
 connectButton.addEventListener("click", function (event) {
 
@@ -92,11 +100,9 @@ sendButton.addEventListener("click", function (event) {
 });
 
 function SendGlobalMessage(message) {
-
-    // Gets the current time
     const time = new Date().toLocaleTimeString();
-
-    connection.invoke("SendMessage", userName, message, time).catch(function (err) {
-        return console.error(err.toString());
-    });
+    return connection.invoke("SendMessage", userName, message, time)
+        .catch(function (err) {
+            console.error(err.toString());
+        });
 }
