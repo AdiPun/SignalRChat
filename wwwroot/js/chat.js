@@ -11,15 +11,17 @@ const userNameInput = document.getElementById("userInput");
 const messageInput = document.getElementById("messageInput");
 const messagesList = document.getElementById("messagesList");
 
-// Username state
+// State
+let connectionNumber = null;
 let userName = null;
 
 // Set up SignalR connection with a const variable
 const connection = new signalR.HubConnectionBuilder().withUrl("/chatHub").build();
 
-// Disable the send and connect button until connection is established.
+// Disable the connect button until connection is established and disable the send and messageInput button.
 connectButton.disabled = true;
 sendButton.disabled = true;
+messageInput.disabled = true;
 
 // On message received
 connection.on("ReceiveMessage", function (user, message, time) {
@@ -32,7 +34,16 @@ connection.on("ReceiveMessage", function (user, message, time) {
 
 // On connection start
 connection.start().then(function () {
+
+    // Create a connection number based on the timestamp
+    connectionNumber = Math.floor(Date.now() % 10000);
+
+    // Send global message when new connection joins
+    SendGlobalMessage(`New connection! Number: ${connectionNumber}`);
+
+    // Enable the connect button
     connectButton.disabled = false;
+
 }).catch(function (err) {
     return console.error("Connection error:", err)
 });
@@ -50,12 +61,16 @@ connectButton.addEventListener("click", function (event) {
 
     userName = input;
 
-    // Enable the send button now but disable the connect button and Username input
+    // Enable the send button and messageInput now but disable the connect button and Username input
     userNameInput.disabled = true;
     connectButton.disabled = true;
     sendButton.disabled = false;
+    messageInput.disabled = false;
+    messageInput.focus();
 
-    SendGlobalMessage("I've connected!");
+    // Announce the name change
+    SendGlobalMessage(`Connection number ${connectionNumber} became ${userName}!`);
+
     event.preventDefault();
 });
 
