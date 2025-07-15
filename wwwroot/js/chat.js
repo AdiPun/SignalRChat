@@ -28,8 +28,14 @@ connection.start().then(function () {
 
 // Bind a click event listener to sendButton to send message on click
 document.getElementById("sendButton").addEventListener("click", function (event) {
-    var user = document.getElementById("userInput").value;
     var message = document.getElementById("messageInput").value;
+
+    // No message, dont send
+    if (!message) {
+        return;
+    }
+
+    var user = document.getElementById("userInput").value;
     var time = new Date();
 
     connection.invoke("SendMessage", user, message, time.toLocaleTimeString()).catch(function (err) {
