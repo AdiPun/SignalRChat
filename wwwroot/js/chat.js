@@ -7,19 +7,19 @@
 // const Elements
 const connectButton = document.getElementById("connectButton");
 const sendButton = document.getElementById("sendButton");
-const userInput = document.getElementById("userInput");
+const userNameInput = document.getElementById("userInput");
 const messageInput = document.getElementById("messageInput");
 const messagesList = document.getElementById("messagesList");
 
-// State
+// Username state
 let userName = null;
 
 // Set up SignalR connection with a const variable
 const connection = new signalR.HubConnectionBuilder().withUrl("/chatHub").build();
 
 // Disable the send and connect button until connection is established.
-document.getElementById("connectButton").disabled = true;
-document.getElementById("sendButton").disabled = true;
+connectButton.disabled = true;
+sendButton.disabled = true;
 
 // On message received
 connection.on("ReceiveMessage", function (user, message, time) {
@@ -40,18 +40,20 @@ connection.start().then(function () {
 // Bind a click event listener to connectButton to send message on click
 connectButton.addEventListener("click", function (event) {
 
-    const input = userInput.value;
+    const input = userNameInput.value;
 
     // if no user, don't connect
     if (!input) {
-        return console.error("Please input a name to connect.");
+        alert("Please enter a username.");
+        return;
     }
 
     userName = input;
 
-    // Enable the send button now but disable the connect button
-    sendButton.disabled = false;
+    // Enable the send button now but disable the connect button and Username input
+    userNameInput.disabled = true;
     connectButton.disabled = true;
+    sendButton.disabled = false;
 
     SendGlobalMessage("I've connected!");
     event.preventDefault();
@@ -65,7 +67,7 @@ sendButton.addEventListener("click", function (event) {
     // No message, dont send
     if (!message) {
 
-        return console.error("Please input a message to send.");
+        return;
     }
 
     SendGlobalMessage(message);
