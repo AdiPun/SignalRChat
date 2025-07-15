@@ -12,7 +12,5 @@ namespace SignalRChat.Hubs
             // SignalR code is asynchronous to provide maximum scalability
             await Clients.All.SendAsync("ReceiveMessage",user,message,time);
         }
-
-
     }
 }

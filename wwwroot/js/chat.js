@@ -6,7 +6,8 @@
 
 var connection = new signalR.HubConnectionBuilder().withUrl("/chatHub").build();
 
-//Disable the send button until connection is established.
+//Disable the send and connect button until connection is established.
+document.getElementById("connectButton").disabled = true;
 document.getElementById("sendButton").disabled = true;
 
 connection.on("ReceiveMessage", function (user, message, time) {
@@ -20,16 +21,38 @@ connection.on("ReceiveMessage", function (user, message, time) {
 });
 
 connection.start().then(function () {
-    document.getElementById("sendButton").disabled = false;
+    document.getElementById("connectButton").disabled = false;
 }).catch(function (err) {
     return console.error(err.toString());
 });
 
+// Bind a click event listener to sendButton to send message on click
 document.getElementById("sendButton").addEventListener("click", function (event) {
     var user = document.getElementById("userInput").value;
     var message = document.getElementById("messageInput").value;
+    var time = new Date();
+
+    connection.invoke("SendMessage", user, message, time.toLocaleTimeString()).catch(function (err) {
+        return console.error(err.toString());
+    });
+    event.preventDefault();
+});
+
+// Bind a click event listener to connectButton to send message on click
+document.getElementById("connectButton").addEventListener("click", function (event) {
+    var user = document.getElementById("userInput").value;
+
+    // if no user, don't connect
+    if (!user) {
+        return console.error("Please input a name to connect.");
+    }
+
+    // Enable the send button now but disable the connect button
+    document.getElementById("sendButton").disabled = false;
+    document.getElementById("connectButton").disabled = true;
 
     var time = new Date();
+    var message = "I've connected!"
 
     connection.invoke("SendMessage", user, message, time.toLocaleTimeString()).catch(function (err) {
         return console.error(err.toString());

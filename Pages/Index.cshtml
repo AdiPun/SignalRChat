@@ -2,30 +2,37 @@
 @* Creates text boxes and a submit button.
 Creates a list with id="messagesList" for displaying messages that are received from the SignalR hub.
 Includes script references to SignalR and the chat.js app code is created in the next step. *@
+
 <div class="container">
-	<div class="row p-1">
+	<div class="row p-1 align-items-center">
 		<div class="col-1">User</div>
-		<div class="col-5"><input type="text" id="userInput" /></div>
+		<div class="col d-flex align-items-center gap-2">
+			<input type="text" id="userInput" class="form-control w-auto" />
+			<input type="button" id="connectButton" value="Connect!" class="btn btn-primary" />
+		</div>
 	</div>
+
 	<div class="row p-1">
 		<div class="col-1">Message</div>
-		<div class="col-5"><input type="text" class="w-100" id="messageInput" /></div>
+		<div class="col-5"><input type="text" id="messageInput" class="form-control w-100" /></div>
 	</div>
+
 	<div class="row p-1">
 		<div class="col-6 text-end">
-			<input type="button" id="sendButton" value="Send Message" />
+			<input type="button" id="sendButton" value="Send Message" class="btn btn-success" />
 		</div>
 	</div>
+
 	<div class="row p-1">
-		<div class="col-6">
-			<hr />
-		</div>
+		<div class="col-6"><hr /></div>
 	</div>
+
 	<div class="row p-1">
 		<div class="col-6">
-			<ul id="messagesList"></ul>
+			<ul id="messagesList" class="list-unstyled"></ul>
 		</div>
 	</div>
 </div>
+
 <script src="~/js/signalr/dist/browser/signalr.js"></script>
 <script src="~/js/chat.js"></script>
